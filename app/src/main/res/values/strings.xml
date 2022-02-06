@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Scoped Storage</string>
+    <string name="set_directory_icon">Set directory icon</string>
+    <string name="star_icon">Star icon</string>
+    <string name="video_not_found">Video not found!</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_name_url_to">Enter name and url to download video file</string>
+    <string name="delete_icon">Delete icon</string>
+    <string name="get_permissions">Get permissions</string>
+    <string name="allow_access">Allow access</string>
+    <string name="need_allow_message">To work with the application, you need access to photos and media.</string>
+    <string name="to_trash_or_delete">Send to trash or permanently delete?</string>
+</resources>
