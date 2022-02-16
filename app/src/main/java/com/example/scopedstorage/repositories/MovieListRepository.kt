@@ -77,7 +77,8 @@ class MovieListRepository(private val context: Context) {
         return movies
     }
 
-    suspend fun saveMovie(name: String, url: String, uri: Uri?) {
+    @SuppressLint("InlinedApi")
+    suspend fun saveMovie(name: String, url: String, uri: Uri?, onChange: () -> Unit) {
         withContext(Dispatchers.IO) {
             //Обработка корректности MIME type с помощью MimeTypeMap по заданию
             val mimeTest = MimeTypeMap.getFileExtensionFromUrl(name.replace(" ", ""))
@@ -87,10 +88,17 @@ class MovieListRepository(private val context: Context) {
                 } ?: "null"
             val videoMimePatterns = Regex("video/\\w+")
             if (videoMimePatterns.matches(mimeTest)) {
-                val movieUri = uri ?: saveMovieDetails(name)
+                val movieUri = if (uri != null) {
+                    //makeMovieVisibleOrNot(uri, 1)
+                    //onChange()
+                    uri
+                } else {
+                    saveMovieDetails(name)
+                }
                 try {
                     downloadMovie(url, movieUri)
                     makeMovieVisibleOrNot(movieUri, 0)
+                    onChange()
                 } catch (t: Throwable) {
                     Log.e("movie_repository", "Error with video download ${t.message}")
                     movieUri.lastPathSegment?.toLong()?.let { deleteMovie(it) }
@@ -129,7 +137,10 @@ class MovieListRepository(private val context: Context) {
                 put(MediaStore.Video.Media.IS_PENDING, 1)
             }
         }
-        Log.e("repository", "movies directory is ${Environment.DIRECTORY_MOVIES} separator is ${File.separator}")
+        Log.e(
+            "repository",
+            "movies directory is ${Environment.DIRECTORY_MOVIES} separator is ${File.separator}"
+        )
         return context.contentResolver.insert(movieCollectionUri, movieDetails)!!
     }
 

@@ -93,7 +93,10 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
             withContext(Dispatchers.IO) {
                 try {
                     downloadProgress = true
-                    repository.saveMovie(name, url, uri)
+                    if (uri != null) deleteVideoFromListState(name)
+                    repository.saveMovie(name, url, uri) {
+                        loadMovies()
+                    }
                 } catch (t: IncorrectMimeTypeException) {
                     incorrectMimeTypeState = true
                     Log.e("movie_list_viewModel", "IncorrectMimeTypeException ${t.message}")
@@ -111,6 +114,11 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             }
         }
+    }
+
+    private fun deleteVideoFromListState(name: String) {
+        val videoToDelete = movieListState.first { it.name == name }
+        movieListState.remove(videoToDelete)
     }
 
 
