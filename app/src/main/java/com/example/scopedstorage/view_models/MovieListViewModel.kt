@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 class MovieListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = MovieListRepository(application)
+    private val tag = "movie_list_viewModel"
 
     private var isObservingStarted = false
     val movieListState = mutableStateListOf<Movie>()
@@ -93,7 +94,7 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
             withContext(Dispatchers.IO) {
                 try {
                     downloadProgress = true
-                    if (uri != null) deleteVideoFromListState(name)
+                    if (uri != null) deleteVideoFromListState(uri)
                     repository.saveMovie(name, url, uri) {
                         loadMovies()
                     }
@@ -116,9 +117,16 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private fun deleteVideoFromListState(name: String) {
-        val videoToDelete = movieListState.first { it.name == name }
-        movieListState.remove(videoToDelete)
+    private fun deleteVideoFromListState(uri: Uri) {
+        try {
+            val videoInList = movieListState.any { it.uri == uri }
+            if (videoInList) {
+                val videoToDelete = movieListState.first { it.uri == uri }
+                movieListState.remove(videoToDelete)
+            }
+        } catch (t: Throwable) {
+            Log.e(tag, "error with fix list ${t.message}")
+        }
     }
 
 
@@ -127,7 +135,7 @@ class MovieListViewModel(application: Application) : AndroidViewModel(applicatio
             try {
                 repository.deleteMovie(id)
             } catch (t: Throwable) {
-                Log.e("movie_list_viewModel", "error with delete movie ${t.message}")
+                Log.e(tag, "error with delete movie ${t.message}")
                 if (haveQ() && t is RecoverableSecurityException) {
                     pendingDeleteId = id
                     recoverableActionMutableLiveData.postValue(t.userAction)

@@ -77,23 +77,25 @@ class MovieListRepository(private val context: Context) {
         return movies
     }
 
+    //https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mov-file.mov
+
     @SuppressLint("InlinedApi")
     suspend fun saveMovie(name: String, url: String, uri: Uri?, onChange: () -> Unit) {
         withContext(Dispatchers.IO) {
             //Обработка корректности MIME type с помощью MimeTypeMap по заданию
-            val mimeTest = MimeTypeMap.getFileExtensionFromUrl(name.replace(" ", ""))
+            val mimeType = MimeTypeMap.getFileExtensionFromUrl(url)
                 ?.run {
                     MimeTypeMap.getSingleton()
                         .getMimeTypeFromExtension(lowercase(Locale.getDefault()))
                 } ?: "null"
             val videoMimePatterns = Regex("video/\\w+")
-            if (videoMimePatterns.matches(mimeTest)) {
+            if (videoMimePatterns.matches(mimeType)) {
                 val movieUri = if (uri != null) {
                     //makeMovieVisibleOrNot(uri, 1)
                     //onChange()
                     uri
                 } else {
-                    saveMovieDetails(name)
+                    saveMovieDetails(name, mimeType)
                 }
                 try {
                     downloadMovie(url, movieUri)
@@ -119,7 +121,7 @@ class MovieListRepository(private val context: Context) {
     }
 
     @SuppressLint("InlinedApi")
-    private fun saveMovieDetails(name: String): Uri {
+    private fun saveMovieDetails(name: String, mimeType: String): Uri {
         val volume = if (haveQ()) {
             MediaStore.VOLUME_EXTERNAL_PRIMARY
         } else {
@@ -129,7 +131,7 @@ class MovieListRepository(private val context: Context) {
         val movieCollectionUri = MediaStore.Video.Media.getContentUri(volume)
         val movieDetails = ContentValues().apply {
             put(MediaStore.Video.Media.DISPLAY_NAME, name)
-            put(MediaStore.Video.Media.MIME_TYPE, "video/*")
+            put(MediaStore.Video.Media.MIME_TYPE, mimeType)
             //For get another folder
             put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES)
             //To hide this file about another apps
