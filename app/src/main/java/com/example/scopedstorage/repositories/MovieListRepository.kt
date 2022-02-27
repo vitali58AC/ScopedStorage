@@ -16,6 +16,7 @@ import android.webkit.MimeTypeMap
 import com.example.scopedstorage.data.Networking
 import com.example.scopedstorage.data.movie_list.Movie
 import com.example.scopedstorage.utils.IncorrectMimeTypeException
+import com.example.scopedstorage.utils.getMimeType
 import com.example.scopedstorage.utils.haveQ
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -83,11 +84,7 @@ class MovieListRepository(private val context: Context) {
     suspend fun saveMovie(name: String, url: String, uri: Uri?, onChange: () -> Unit) {
         withContext(Dispatchers.IO) {
             //Обработка корректности MIME type с помощью MimeTypeMap по заданию
-            val mimeType = MimeTypeMap.getFileExtensionFromUrl(url)
-                ?.run {
-                    MimeTypeMap.getSingleton()
-                        .getMimeTypeFromExtension(lowercase(Locale.getDefault()))
-                } ?: "null"
+            val mimeType = getMimeType(url)
             val videoMimePatterns = Regex("video/\\w+")
             if (videoMimePatterns.matches(mimeType)) {
                 val movieUri = if (uri != null) {
