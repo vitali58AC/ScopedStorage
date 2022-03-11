@@ -1,6 +1,6 @@
 # Scoped storage
 
-Используется: Media Store APIm Jetpack Compose, Retrofit, Glide, Coroutine.
+Используется: Media Store API, Jetpack Compose, Retrofit, Glide, Coroutine.
 
 **Описание приложения:**
 На главное экране отоброжается все видео с устройства, сохранённые в shared external storage. Для этого при запуске запрашиваются необходимые разрешения.
