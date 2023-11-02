@@ -10,4 +10,4 @@ Videos can be downloaded using Retrofit.
 
 Videos downloaded by the application, as well as videos from other applications, can be deleted,
 marked as favorites, and added to cart. Uses both the classic use of registerForActivityResult
-and rememberLauncherForActivityResult Compose to request the required permissions from the use      r.
+and rememberLauncherForActivityResult Compose to request the required permissions from the user.
