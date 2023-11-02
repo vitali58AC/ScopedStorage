@@ -1,9 +1,13 @@
 # Scoped storage
 
-Используется: Media Store API, Jetpack Compose, Retrofit, Glide, Coroutine.
+Used: Media Store API, Jetpack Compose, Retrofit, Glide, Coroutine.
 
-**Описание приложения:**
-На главное экране отоброжается все видео с устройства, сохранённые в shared external storage. Для этого при запуске запрашиваются необходимые разрешения.
-Видео можно скачивать с помощью Retrofit. 
-Видео скачанное приложением, а также видео из других приложений можно удалять, отмечать как избранное, добавлять в корзину.
-Используется как класическое использование registerForActivityResult так и rememberLauncherForActivityResult Compose для запроса необходимых разрешений у пользователя.
+**Application description:**
+
+All videos from the device saved in shared external storage are displayed on the main screen.
+To do this, the necessary permissions are requested at startup.
+Videos can be downloaded using Retrofit.
+
+Videos downloaded by the application, as well as videos from other applications, can be deleted,
+marked as favorites, and added to cart. Uses both the classic use of registerForActivityResult
+and rememberLauncherForActivityResult Compose to request the required permissions from the use      r.
